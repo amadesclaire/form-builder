@@ -5,6 +5,7 @@
     "jsr:@hono/hono@^4.6.12": "4.6.12",
     "jsr:@lucsoft/web-bson@~0.3.1": "0.3.1",
     "jsr:@std/assert@1": "1.0.8",
+    "jsr:@std/crypto@^1.0.3": "1.0.3",
     "jsr:@std/crypto@~0.220.1": "0.220.1",
     "jsr:@std/encoding@~0.220.1": "0.220.1",
     "jsr:@std/internal@^1.0.5": "1.0.5"
@@ -14,7 +15,7 @@
       "integrity": "89312b9db63ad733920901d60faf8c667aa3cb0a64b67f8c3e74601465273e3a",
       "dependencies": [
         "jsr:@lucsoft/web-bson",
-        "jsr:@std/crypto",
+        "jsr:@std/crypto@~0.220.1",
         "jsr:@std/encoding"
       ]
     },
@@ -33,6 +34,9 @@
     "@std/crypto@0.220.1": {
       "integrity": "4cec173974f33398041a3f66cc2f9b2fcc4a5ceaddd0e60840887d3bb7289d23"
     },
+    "@std/crypto@1.0.3": {
+      "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
+    },
     "@std/encoding@0.220.1": {
       "integrity": "8dc38dd72e36cd68857a5837e24eb09a64bb296b96c295239c75eec17d45d23f"
     },
@@ -44,7 +48,8 @@
     "dependencies": [
       "jsr:@db/mongo@0.33",
       "jsr:@hono/hono@^4.6.12",
-      "jsr:@std/assert@1"
+      "jsr:@std/assert@1",
+      "jsr:@std/crypto@^1.0.3"
     ]
   }
 }
