@@ -63,7 +63,7 @@ const JWTService = {
       .replace(/\+/g, "-")
       .replace(/\//g, "_");
   },
-  createJwt: async (
+  create: async (
     header: JWTHeader,
     payload: JWTPayload,
     secret: string
@@ -79,7 +79,7 @@ const JWTService = {
 
     return `${headerBase64}.${payloadBase64}.${signatureBase64}`;
   },
-  isTokenFormatValid: (token: string): boolean => {
+  isFormatValid: (token: string): boolean => {
     const isValid = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(
       token
     );
@@ -88,9 +88,9 @@ const JWTService = {
     }
     throw new Error("Invalid token format");
   },
-  getJwtPayload: (token: string): JWTPayload => {
+  payload: (token: string): JWTPayload => {
     try {
-      JWTService.isTokenFormatValid(token);
+      JWTService.isFormatValid(token);
 
       const payloadBase64 = token.split(".")[1];
       const json = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
@@ -102,10 +102,10 @@ const JWTService = {
       throw new Error("Failed to decode Base64 or parse payload");
     }
   },
-  isJwtExpired: (token: string): boolean => {
+  isExpired: (token: string): boolean => {
     try {
-      JWTService.isTokenFormatValid(token);
-      const payload = JWTService.getJwtPayload(token);
+      JWTService.isFormatValid(token);
+      const payload = JWTService.payload(token);
       if (!payload || !payload.exp) return true;
       const now = Math.floor(Date.now() / 1000);
       const skew = 300;
@@ -119,9 +119,9 @@ const JWTService = {
       }
     }
   },
-  isJwtValid: async (token: string, secret: string): Promise<boolean> => {
+  verify: async (token: string, secret: string): Promise<boolean> => {
     try {
-      JWTService.isTokenFormatValid(token);
+      JWTService.isFormatValid(token);
       const [headerBase64, payloadBase64, signatureBase64] = token.split(".");
       const data = `${headerBase64}.${payloadBase64}`;
       const calculatedSignature = await JWTService.hmacSha256(secret, data);
