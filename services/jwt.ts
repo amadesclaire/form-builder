@@ -1,11 +1,15 @@
+import { UnauthorizedError } from "lib/errors.ts";
+import { getUnixTime } from "utils/getUnixTime.ts";
+import { User } from "models/user.ts";
+
 export type JWTPayload = {
-  iss?: string; // Issuer
-  sub?: string; // Subject
+  iss: string; // Issuer:
+  sub: string; // Subject: User ID
+  exp: number; // Expiration time (Unix timestamp)
+  iat: number; // Issued at (Unix timestamp)
+  email: string; // User email
   aud?: string; // Audience
-  exp?: number; // Expiration time (Unix timestamp)
   nbf?: number; // Not before (Unix timestamp)
-  iat?: number; // Issued at (Unix timestamp)
-  jti?: string; // JWT ID
   [key: string]: unknown; // Allow additional custom claims
 };
 
@@ -63,13 +67,22 @@ const JWTService = {
       .replace(/\+/g, "-")
       .replace(/\//g, "_");
   },
-  create: async (
-    header: JWTHeader,
-    payload: JWTPayload,
-    secret: string
-  ): Promise<string> => {
-    const currentUnixTime = Math.floor(Date.now() / 1000);
-    payload.iat = currentUnixTime;
+  create: async (user: User): Promise<string> => {
+    if (!user._id) {
+      throw new Error("User ID not found");
+    }
+    const header: JWTHeader = {
+      alg: "HS256",
+      typ: "JWT",
+    };
+    const payload: JWTPayload = {
+      iss: user._id,
+      sub: "",
+      exp: getUnixTime() + 60 * 60, // 1 hour
+      iat: getUnixTime(),
+      email: user.email,
+    };
+    const secret = Deno.env.get("JWT_SECRET") ?? "secret";
     const headerBase64 = await JWTService.base64Encode(header);
     const payloadBase64 = await JWTService.base64Encode(payload);
     const signatureBase64 = await JWTService.hmacSha256(
@@ -119,8 +132,9 @@ const JWTService = {
       }
     }
   },
-  verify: async (token: string, secret: string): Promise<boolean> => {
+  verify: async (token: string): Promise<boolean> => {
     try {
+      const secret = Deno.env.get("JWT_SECRET") ?? "secret";
       JWTService.isFormatValid(token);
       const [headerBase64, payloadBase64, signatureBase64] = token.split(".");
       const data = `${headerBase64}.${payloadBase64}`;

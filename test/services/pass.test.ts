@@ -1,5 +1,5 @@
 import { assertEquals, assertNotEquals } from "@std/assert";
-import PasswordService from "../../src/services/pass.ts";
+import PasswordService from "services/pass.ts";
 
 Deno.test("createPasswordHash generates a valid hash", async () => {
   const password = "securePassword123";
