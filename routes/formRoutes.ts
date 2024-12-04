@@ -1,7 +1,7 @@
-// authRoutes.ts
+// formRoutes.ts
 import { Handler, Route } from "@std/http";
 
-interface AuthController {
+interface FormController {
   signupForm: Handler;
   signup: Handler;
   login: Handler;
@@ -9,7 +9,7 @@ interface AuthController {
   me: Handler;
 }
 
-const authController: AuthController = {
+const formController: FormController = {
   signupForm: (_req) => {
     return new Response("Signup form");
   },
@@ -27,30 +27,30 @@ const authController: AuthController = {
   },
 };
 
-export const authRoutes = (): Route[] => [
+export const formRoutes = (): Route[] => [
   {
     method: "GET",
-    pattern: new URLPattern({ pathname: "/auth/signup" }),
-    handler: authController.signupForm,
+    pattern: new URLPattern({ pathname: "/form/signup" }),
+    handler: formController.signupForm,
   },
   {
     method: "POST",
-    pattern: new URLPattern({ pathname: "/auth/signup" }),
-    handler: authController.signup,
+    pattern: new URLPattern({ pathname: "/form/signup" }),
+    handler: formController.signup,
   },
   {
     method: "POST",
-    pattern: new URLPattern({ pathname: "/auth/login" }),
-    handler: authController.login,
+    pattern: new URLPattern({ pathname: "/form/login" }),
+    handler: formController.login,
   },
   {
     method: "POST",
-    pattern: new URLPattern({ pathname: "/auth/logout" }),
-    handler: authController.logout,
+    pattern: new URLPattern({ pathname: "/form/logout" }),
+    handler: formController.logout,
   },
   {
     method: "GET",
-    pattern: new URLPattern({ pathname: "/auth/me" }),
-    handler: authController.me,
+    pattern: new URLPattern({ pathname: "/form/me" }),
+    handler: formController.me,
   },
 ];

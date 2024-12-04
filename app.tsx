@@ -1,24 +1,11 @@
 // app.ts
-import AuthController from "controllers/authController.ts";
-import { connectDB } from "db/connection.ts";
 import { Handler, Route, route } from "@std/http";
 import HomePage from "views/home.ts";
 import { authRoutes } from "routes/authRoutes.ts";
-import { withAuth } from "middleware/withAuth.ts";
 // TODO: Request validation in controllers
 
-const db = await connectDB();
-const authController = new AuthController(db);
-
 const routes: Route[] = [
-  ...authRoutes(authController),
-  {
-    method: "GET",
-    pattern: new URLPattern({ pathname: "/protected" }),
-    handler: withAuth((_req) => {
-      return new Response("This is a protected resource", { status: 200 });
-    }),
-  },
+  ...authRoutes(),
   {
     method: "GET",
     pattern: new URLPattern({ pathname: "/dashboard" }),

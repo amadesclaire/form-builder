@@ -1,4 +1,3 @@
-import { UnauthorizedError } from "lib/errors.ts";
 import { getUnixTime } from "utils/getUnixTime.ts";
 import { User } from "models/user.ts";
 
