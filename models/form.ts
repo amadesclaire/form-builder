@@ -4,12 +4,13 @@ export interface Form {
   title: string; // Form title
   description?: string; // Optional description
   fields: FormField[]; // Array of form fields
-  createdAt: Date;
-  updatedAt: Date;
+  published: boolean; // Is form published
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface FormField {
-  name: string; // Field name
+  question: string; // Field name
   type: "text" | "email" | "number" | "checkbox" | "radio" | "textarea"; // Field type
   options?: string[]; // For checkbox/radio fields
   required: boolean; // Is field mandatory

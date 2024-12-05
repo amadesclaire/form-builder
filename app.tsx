@@ -2,9 +2,11 @@
 import { Handler, Route, route } from "@std/http";
 import HomePage from "views/home.ts";
 import { authRoutes } from "routes/authRoutes.ts";
+import { formRoutes } from "routes/formRoutes.ts";
 // TODO: Request validation in controllers
 
 const routes: Route[] = [
+  ...formRoutes(),
   ...authRoutes(),
   {
     method: "GET",

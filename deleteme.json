@@ -1,0 +1,24 @@
+{
+  "id": "66ca5a29-6e52-4f6d-a46e-7fe63459a5a1",
+  "namespace": "username",
+  "title": "Alex's form",
+  "description": "ahsgksadhgoiahsdg asdhgio",
+  "fields": [
+    {
+      "question": "Email plz",
+      "type": "email",
+      "required": false,
+      "options": []
+    },
+    {
+      "question": "Contact okay",
+      "type": "checkbox",
+      "required": false,
+      "options": []
+    },
+    { "question": "", "type": "text", "required": false, "options": [] }
+  ],
+  "published": false,
+  "createdAt": "2024-12-04T15:36:41.167Z",
+  "updatedAt": "2024-12-04T15:36:41.167Z"
+}

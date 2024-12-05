@@ -10,7 +10,7 @@ export const Layout = ({ children }: { children: string }) =>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
       <body>
-        <div class="max-w-2xl mx-auto">${children}</div>
+        <div class="max-w-2xl px-4 mx-auto">${children}</div>
       </body>
     </html>
   `;
