@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Terminal Create</title>
+    <title>Create Form</title>
     <link rel="stylesheet" href="/static/terminal.css" />
   </head>
   <body>
@@ -12,23 +12,25 @@
       <form class="form" @submit.prevent="submitForm">
         <!-- Form Name -->
         <div class="form-group">
-          <label for="name" class="terminal-label">Name</label>
+          <!-- <label for="name" class="terminal-label">Name</label> -->
           <input
             type="text"
             id="name"
             class="terminal-input"
             x-model="form.name"
+            placeholder="Title"
             required
           />
         </div>
 
         <!-- Form Description -->
         <div class="form-group">
-          <label for="description" class="terminal-label">Description</label>
+          <!-- <label for="description" class="terminal-label">Description</label> -->
           <textarea
             id="description"
             class="terminal-textarea"
             x-model="form.description"
+            placeholder="Description"
             required
           ></textarea>
         </div>
@@ -66,19 +68,21 @@
             <div class="form-group">
               <fieldset class="terminal-fieldset">
                 <div class="form-group">
-                  <label class="terminal-label">Question</label>
+                  <!-- <label class="terminal-label">Question</label> -->
                   <input
                     type="text"
                     class="terminal-input"
                     x-model="field.question"
+                    placeholder="Question"
                     required
                   />
                 </div>
                 <div class="form-group">
-                  <label class="terminal-label">Description</label>
+                  <!-- <label class="terminal-label">Description</label> -->
                   <input
                     type="text"
                     class="terminal-input"
+                    placeholder="Description"
                     x-model="field.description"
                   />
                 </div>
@@ -183,9 +187,7 @@
 
         <!-- Submit Button -->
         <div class="form-group">
-          <button type="submit" class="btn btn-default btn-block">
-            Create Form
-          </button>
+          <button type="submit" class="btn btn-default">Create Form</button>
         </div>
       </form>
       <pre class="terminal-code" x-text="JSON.stringify(form, null, 2)"></pre>
