@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="icon" href="/static/logo-small.png" type="image/png" />
+    <style>
+      .c {
+        margin: auto;
+        max-width: 600px;
+      }
+      pre {
+        height: 200px;
+        border: 1px solid black;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="c">
+      <h1>Forms</h1>
+      <!--List forms-->
+      <div>
+        <pre id="forms"></pre>
+        <button onclick="listForms()">List Forms</button>
+      </div>
+      <br />
+      <!--Get form-->
+      <div>
+        <pre id="form"></pre>
+        <input type="text" id="formId" placeholder="Form ID" />
+        <button onclick="getForm()">Get Form</button>
+      </div>
+      <br />
+      <!--Create form-->
+      <form id="createForm">
+        <input type="text" name="name" placeholder="Form Name" />
+        <input type="text" name="description" placeholder="Form Description" />
+        <button type="submit">Create Form</button>
+      </form>
+      <br />
+      <!--Edit form-->
+      <form id="editForm">
+        <input type="text" name="name" placeholder="Form Name" />
+        <input type="text" name="description" placeholder="Form Description" />
+        <button type="submit">Edit Form</button>
+      </form>
+      <br />
+      <!--delete form-->
+      <form id="deleteForm">
+        <input type="text" name="formId" placeholder="Form ID" />
+        <button type="submit">Delete Form</button>
+      </form>
+    </div>
+  </body>
+  <script>
+    const listForms = async () => {
+      const response = await fetch("/api/forms");
+      const data = await response.json();
+      document.getElementById("forms").innerText = JSON.stringify(
+        data,
+        null,
+        2
+      );
+    };
+    const getForm = async () => {
+      const formId = document.getElementById("formId").value;
+      const response = await fetch(`/api/forms/${formId}`);
+      const data = await response.json();
+      document.getElementById("form").innerText = JSON.stringify(data, null, 2);
+    };
+    const createForm = () => {
+      const form = document.getElementById("createForm");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch("/api/forms", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        console.log(data);
+      });
+    };
+    const editForm = () => {
+      const form = document.getElementById("editForm");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const formId = document.getElementById("formId").value;
+        const response = await fetch(`/api/forms/${formId}`, {
+          method: "PUT",
+          body: formData,
+        });
+        const data = await response.json();
+        console.log(data);
+      });
+    };
+    const deleteForm = () => {
+      const form = document.getElementById("deleteForm");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const formId = formData.get("formId");
+        const response = await fetch(`/api/forms/${formId}`, {
+          method: "DELETE",
+        });
+        const data = await response.json();
+        console.log(data);
+      });
+    };
+  </script>
+</html>

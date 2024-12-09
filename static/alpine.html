@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      .c {
+        padding: 0 40px;
+        margin: 48px auto;
+        max-width: 768px;
+        font-family: ui-monospace, monospace;
+        font-size: 90%;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 400px;
+      }
+      .fields {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      fieldset {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .options-head {
+        display: flex;
+        justify-content: space-between;
+      }
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      #protected {
+        display: flex;
+        flex-direction: row;
+      }
+    </style>
+    <div class="c" x-data="formBuilder()">
+      <h1>Create Form</h1>
+      <form @submit.prevent="submitForm">
+        <!-- Form Name -->
+        <label for="name">
+          Name
+          <input type="text" id="name" x-model="form.name" required />
+        </label>
+
+        <!-- Form Description -->
+        <label for="description">
+          Description
+          <textarea
+            id="description"
+            x-model="form.description"
+            required
+          ></textarea>
+        </label>
+
+        <!-- Protected Checkbox and Password -->
+        <div>
+          <label for="protected" style="display: inline">
+            Protected
+            <input type="checkbox" id="protected" x-model="form.protected" />
+          </label>
+          <label for="password" x-show="form.protected" style="display: none">
+            Password
+            <input
+              type="password"
+              id="password"
+              x-model="form.password"
+              x-bind:required="form.protected"
+            />
+          </label>
+        </div>
+
+        <!-- Dynamic Fields -->
+        <strong>Fields</strong>
+        <div class="fields">
+          <template
+            x-for="(field, fieldIndex) in form.fields"
+            :key="fieldIndex"
+          >
+            <fieldset class="field">
+              <div style="display: flex; justify-content: flex-end">
+                <button type="button" @click="removeField(fieldIndex)">
+                  Remove Field
+                </button>
+              </div>
+              <label>
+                Question
+                <input type="text" x-model="field.question" required />
+              </label>
+              <label>
+                Description
+                <input type="text" x-model="field.description" />
+              </label>
+              <label>
+                Field Type
+                <select
+                  x-model="field.type"
+                  @change="initializeOptions(field)"
+                  required
+                >
+                  <option value="text">Text</option>
+                  <option value="paragraph">Paragraph</option>
+                  <option value="choose-one">Choose one</option>
+                  <option value="checkbox">Checkbox</option>
+                  <option value="dropdown">Dropdown</option>
+                  <option value="file-upload">File Upload</option>
+                  <option value="image">Image</option>
+                  <option value="number">Number</option>
+                  <option value="rating">Rating</option>
+                  <option value="range">Range</option>
+                  <option value="tel">Tel</option>
+                  <option value="email">Email</option>
+                  <option value="url">URL</option>
+                  <option value="date">Date</option>
+                  <option value="time">Time</option>
+                  <option value="date-time">Date Time</option>
+                </select>
+              </label>
+
+              <!-- Options Section -->
+              <template x-if="hasOptions(field)">
+                <div class="option">
+                  <div class="options-head">
+                    <strong>Options</strong>
+                    <button type="button" @click="addOption(fieldIndex)">
+                      + Add Option
+                    </button>
+                  </div>
+                  <template
+                    x-for="(option, optionIndex) in field.options"
+                    :key="optionIndex"
+                  >
+                    <div>
+                      <label>
+                        <span x-text="optionIndexText(optionIndex)"></span>
+                        <div style="display: flex">
+                          <input
+                            style="width: 100%"
+                            type="text"
+                            x-model="field.options[optionIndex]"
+                            required
+                          />
+                          <button
+                            type="button"
+                            @click="removeOption(fieldIndex, optionIndex)"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </label>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </fieldset>
+          </template>
+        </div>
+
+        <!-- Add Field Button -->
+        <button type="button" @click="addField">+ Add Field</button>
+
+        <!-- Submit Button -->
+        <div>
+          <button type="submit">Create Form</button>
+        </div>
+      </form>
+      <pre x-text="JSON.stringify(form, null, 2)"></pre>
+    </div>
+    <script>
+      function formBuilder() {
+        return {
+          form: {
+            name: "",
+            description: "",
+            protected: false,
+            password: "",
+            fields: [],
+          },
+
+          optionIndexText(index) {
+            return `Option ${index + 1}`;
+          },
+
+          hasOptions(field) {
+            // Return true for field types that require options
+            return [
+              "choose-one",
+              "checkbox",
+              "dropdown",
+              "rating",
+              "range",
+            ].includes(field.type);
+          },
+
+          initializeOptions(field) {
+            // Initialize options only if the field type requires it
+            if (this.hasOptions(field) && !field.options) {
+              field.options = [""];
+            } else if (!this.hasOptions(field)) {
+              delete field.options;
+            }
+          },
+
+          addField() {
+            this.form.fields.push({
+              type: "text",
+              question: "",
+              description: "",
+              options: [],
+            });
+          },
+
+          removeField(index) {
+            this.form.fields.splice(index, 1);
+          },
+
+          addOption(fieldIndex) {
+            this.form.fields[fieldIndex].options.push("");
+          },
+
+          removeOption(fieldIndex, optionIndex) {
+            this.form.fields[fieldIndex].options.splice(optionIndex, 1);
+          },
+
+          submitForm() {
+            console.log(this.form);
+            // Send the form as JSON
+            fetch("/new", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(this.form),
+            })
+              .then((response) => {
+                if (response.redirected) {
+                  window.location.href = response.url;
+                } else {
+                  return response.json();
+                }
+              })
+              .then((data) => {
+                console.log("Form created successfully:", data);
+              })
+              .catch((error) => {
+                console.error("Error creating form:", error);
+              });
+          },
+        };
+      }
+    </script>
+
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </body>
+</html>
