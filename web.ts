@@ -57,6 +57,8 @@ const NewHomePage = html` ${headTag}
         </div>
       </header>
 
+      <br />
+
       <p class="terminal-alert-primary">
         The simple, flexible form builder for developers.
       </p>
@@ -71,7 +73,7 @@ const NewHomePage = html` ${headTag}
 
       <!-- Features Section -->
       <h2 class="terminal-heading">Features</h2>
-      <div class="terminal-card">
+      <div>
         <strong>Developer Friendly</strong>
         <p>Build and manage forms programmatically with our API.</p>
         <strong>Webhook Integrations</strong>
@@ -519,6 +521,200 @@ const ListPage = html`
     </div>
   </div>
 `;
+const EditPage = (form: Form) => {
+  return html`
+    ${headTag}
+    <body>
+      <div class="container" x-data="formBuilder(${JSON.stringify(form)})">
+        <h1 class="terminal-heading">Edit Form</h1>
+        <hr style="margin-top: 0" />
+        <form class="form" @submit.prevent="submitForm">
+          <!-- Form Name -->
+          <div class="form-group">
+            <input
+              type="text"
+              id="name"
+              class="terminal-input"
+              x-model="form.name"
+              placeholder="Title"
+              required
+            />
+          </div>
+
+          <!-- Form Description -->
+          <div class="form-group">
+            <textarea
+              id="description"
+              class="terminal-textarea"
+              x-model="form.description"
+              placeholder="Description"
+              required
+            ></textarea>
+          </div>
+
+          <!-- Protected Checkbox and Password -->
+          <div class="form-group">
+            <label for="protected" class="terminal-label">
+              <input
+                type="checkbox"
+                id="protected"
+                class="terminal-checkbox"
+                x-model="form.protected"
+              />
+              Protected
+            </label>
+            <div x-show="form.protected">
+              <label for="password" class="terminal-label">Password</label>
+              <input
+                type="password"
+                id="password"
+                class="terminal-input"
+                x-model="form.password"
+                x-bind:required="form.protected"
+              />
+            </div>
+          </div>
+
+          <!-- Dynamic Fields -->
+          <div class="form-group">
+            <h3 class="terminal-heading">Fields</h3>
+            <template
+              x-for="(field, fieldIndex) in form.fields"
+              :key="fieldIndex"
+            >
+              <div class="form-group">
+                <fieldset class="terminal-fieldset">
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="terminal-input"
+                      x-model="field.question"
+                      placeholder="Question"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="terminal-input"
+                      placeholder="Description"
+                      x-model="field.description"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="terminal-label">Field Type</label>
+                    <select
+                      class="terminal-select"
+                      x-model="field.type"
+                      @change="initializeOptions(field)"
+                      required
+                    >
+                      <option value="text">Text</option>
+                      <option value="paragraph">Paragraph</option>
+                      <option value="choose-one">Choose one</option>
+                      <option value="checkbox">Checkbox</option>
+                      <option value="dropdown">Dropdown</option>
+                      <option value="file-upload">File Upload</option>
+                      <option value="image">Image</option>
+                      <option value="number">Number</option>
+                      <option value="rating">Rating</option>
+                      <option value="range">Range</option>
+                      <option value="tel">Tel</option>
+                      <option value="email">Email</option>
+                      <option value="url">URL</option>
+                      <option value="date">Date</option>
+                      <option value="time">Time</option>
+                      <option value="date-time">Date Time</option>
+                    </select>
+                  </div>
+
+                  <!-- Options Section -->
+                  <template x-if="hasOptions(field)">
+                    <div>
+                      <div
+                        style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    "
+                      >
+                        <h4 class="terminal-text" style="margin: 0">Options</h4>
+                        <button
+                          type="button"
+                          class="btn btn-default btn-ghost btn-small"
+                          @click="addOption(fieldIndex)"
+                        >
+                          + Add Option
+                        </button>
+                      </div>
+                      <template
+                        x-for="(option, optionIndex) in field.options"
+                        :key="optionIndex"
+                      >
+                        <div class="form-group">
+                          <label class="terminal-label">
+                            <span x-text="optionIndexText(optionIndex)"></span>
+                            <div style="display: flex">
+                              <input
+                                type="text"
+                                class="terminal-input"
+                                x-model="field.options[optionIndex]"
+                                required
+                              />
+                              <button
+                                type="button"
+                                class="btn btn-error btn-small"
+                                @click="removeOption(fieldIndex, optionIndex)"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </label>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                  <hr />
+                  <div style="display: flex; justify-content: flex-end">
+                    <button
+                      type="button"
+                      class="btn btn-error btn-small"
+                      @click="removeField(fieldIndex)"
+                    >
+                      Remove Field
+                    </button>
+                  </div>
+                </fieldset>
+              </div>
+            </template>
+          </div>
+
+          <!-- Add Field Button -->
+          <div class="form-group">
+            <button
+              type="button"
+              class="btn btn-default btn-ghost btn-small"
+              @click="addField"
+            >
+              + Add Field
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update Form</button>
+          </div>
+        </form>
+        <pre class="terminal-code" x-text="JSON.stringify(form, null, 2)"></pre>
+      </div>
+      <script src="/static/form-edit.js"></script>
+      <script
+        defer
+        src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      ></script>
+    </body>
+  `;
+};
 
 // Forms ****************************************************************
 const forms = new Hono();
@@ -546,10 +742,8 @@ forms.post("/", async (c) => {
       webhooks: [],
     };
     db.forms.set(form.id, form);
-    c.status(202);
-    return c.json({ mesage: "good" });
-
-    // return c.redirect(`/forms`);
+    c.status(302);
+    return c.redirect(`/forms/${id}`);
   } catch (error) {
     console.error(error);
     c.status(500);
@@ -561,57 +755,7 @@ forms.get("/:id/edit", (c) => {
   const id = c.req.param("id");
   const form = db.forms.get(id) as Form;
   if (form) {
-    return c.html(
-      html`
-        <style>
-          ${raw(containerStyle)} form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 400px;
-          }
-          label {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-          }
-          #protected {
-            display: flex;
-            flex-direction: row;
-          }
-        </style>
-        <div class="c">
-          <h1>Edit Form</h1>
-          <form method="post">
-            <label for="name"
-              >Name
-              <input type="text" name="name" id="name" value="${form.name}" />
-            </label>
-            <label for="description"
-              >Description
-              <textarea name="description" id="description">
-${form.description}</textarea
-              >
-            </label>
-            <label for="protected" id="protected">
-              Protected
-              <input type="checkbox" name="protected" id="protected" />
-            </label>
-            <label for="password">
-              Password
-              <input type="password" name="password" id="password" />
-            </label>
-            <label for="fields"
-              >Fields
-              <textarea name="fields" id="fields">
-${JSON.stringify(form.fields)}</textarea
-              >
-            </label>
-            <button type="submit">Update Form</button>
-          </form>
-        </div>
-      `
-    );
+    return c.html(EditPage(form));
   }
   c.status(404);
   return c.html(html`<h1>Form not found /:id/edit</h1>`);
