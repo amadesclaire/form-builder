@@ -26,17 +26,7 @@ const containerStyle = `
     font-size: 90%;
   }`;
 
-const navStyle = `
-  ul {
-    padding: 0;
-    list-style-type: none;
-    list-style: none;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }`;
-
-const nav = html` <nav>
+const nav = html` <nav class="terminal-menu">
   <ul>
     <li><a href="/forms">Forms</a></li>
     <li>|</li>
@@ -49,12 +39,253 @@ const nav = html` <nav>
 </nav>`;
 
 // Views ****************************************************************
-const CreatePage = html` <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Form</title>
-    <link rel="stylesheet" href="/static/terminal.css" />
-  </head>
+const headTag = html`<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Form</title>
+  <link rel="stylesheet" href="/static/terminal.css" />
+</head>`;
+const NewHomePage = html` ${headTag}
+  <body>
+    <div class="container">
+      <header class="terminal-banner space-between">
+        <h1 class="terminal-heading">Skeleton Forms</h1>
+        <div class="terminal-flex" style="gap: 12px;">
+          <a href="/login" class="terminal-link">Login</a>
+          <span class="terminal-text">|</span>
+          <a href="/signup" class="terminal-link">Signup</a>
+        </div>
+      </header>
+
+      <p class="terminal-alert-primary">
+        The simple, flexible form builder for developers.
+      </p>
+      <p>
+        Skeleton Forms is a lightweight form builder made for developers who
+        want an easy way to collect and process data. It comes with a
+        straightforward REST API and built-in webhook support, so you can
+        quickly integrate forms into your workflows and automate tasks without
+        the hassle.
+      </p>
+      <hr class="terminal-hr" />
+
+      <!-- Features Section -->
+      <h2 class="terminal-heading">Features</h2>
+      <div class="terminal-card">
+        <strong>Developer Friendly</strong>
+        <p>Build and manage forms programmatically with our API.</p>
+        <strong>Webhook Integrations</strong>
+        <p>
+          Automate your workflows by triggering external services on form
+          submissions.
+        </p>
+        <strong>Flexible Usage</strong>
+        <p>
+          Choose between simple pricing tiers or flexible pay-per-use options
+          that scale with your needs.
+        </p>
+        <strong>Lightweight & Fast</strong>
+        <p>
+          Built for speed and simplicity, Skeleton Forms won&apos;t slow you
+          down.
+        </p>
+      </div>
+      <hr class="terminal-hr" />
+
+      <!-- Pricing Section -->
+      <h2 class="terminal-heading">Pricing</h2>
+      <div class="terminal-timeline">
+        <div class="terminal-card">
+          <header class="terminal-card-header">
+            <strong>Basic</strong>
+          </header>
+          <div class="terminal-card-body">
+            <h2>$2</h2>
+            <small>/per month</small>
+            <ul class="terminal-list">
+              <li>10 Forms</li>
+              <li>1000 Responses</li>
+              <li>1000 Webhook Calls</li>
+            </ul>
+          </div>
+        </div>
+        <div class="terminal-card">
+          <header class="terminal-card-header">
+            <strong>Pro</strong>
+          </header>
+          <div class="terminal-card-body">
+            <h2>$10</h2>
+            <small>/per month</small>
+            <ul class="terminal-list">
+              <li>100 Forms</li>
+              <li>10,000 Responses</li>
+              <li>10,000 Webhook Calls</li>
+            </ul>
+          </div>
+        </div>
+        <div class="terminal-card">
+          <header class="terminal-card-header">
+            <strong>Flex</strong>
+          </header>
+          <div class="terminal-card-body">
+            <h2>$0</h2>
+            <small>/per month</small>
+            <ul class="terminal-list">
+              <li>25&cent; / Form</li>
+              <li>0.002&cent; / Response</li>
+              <li>0.002&cent; / Webhook Call</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn btn-default">Get Started</button>
+      </div>
+    </div>
+  </body>`;
+const OldHomePage = html`
+  <style>
+    ${raw(bodyStyle)} ${raw(containerStyle)} .o {
+      border-left: 4px solid #16a34a;
+      margin-left: -16px;
+      padding-left: 12px;
+    }
+    .f {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .a {
+      display: flex;
+      gap: 12px;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+    tr {
+      padding-bottom: 20px;
+    }
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      justify-content: space-between;
+      border: 2px dashed #000;
+      @media (prefers-color-scheme: dark) {
+        border-color: #fff;
+      }
+      .plan {
+        border-right: 2px dashed #000;
+        @media (prefers-color-scheme: dark) {
+          border-color: #fff;
+        }
+        padding: 12px;
+        h2 {
+          margin-bottom: 0;
+        }
+      }
+      .plan:last-child {
+        border-right: none;
+      }
+      ul {
+        padding-left: 1rem;
+        list-style-type: disc;
+        line-height: 1.5;
+      }
+    }
+  </style>
+
+  <div class="c">
+    <div class="f">
+      <h1>Skeleton Forms</h1>
+      <div class="a">
+        <a href="/login">Login</a>
+        <span>|</span>
+        <a href="/signup">Signup</a>
+      </div>
+    </div>
+
+    <p class="o">The simple, flexible form builder for developers.</p>
+    <p>
+      Skeleton Forms is a lightweight form builder made for developers who want
+      an easy way to collect and process data. It comes with a straightforward
+      REST API and built-in webhook support, so you can quickly integrate forms
+      into your workflows and automate tasks without the hassle.
+    </p>
+    <br />
+    <!--------------------Features------------------------>
+    <h2>Features</h2>
+    <hr style="border-top: 2px dashed #000" />
+    <br />
+    <strong>Developer Friendly</strong>
+    <p>Build and manage forms programmatically with our API.</p>
+    <strong>Webhook integrations</strong>
+    <p>
+      Automate your workflows by triggering external services on form
+      submissions.
+    </p>
+    <strong>Flexible usage</strong>
+    <p>
+      Choose between simple pricing tiers or flexible pay-per-use options that
+      scale with your needs.
+    </p>
+    <strong>Lightweight & Fast</strong>
+    <p>
+      Built for speed and simplicity, Skeleton Forms won&apos;t slow you down.
+    </p>
+    <br />
+    <!--------------------Pricing------------------------>
+    <h2>Pricing</h2>
+    <div class="pricing">
+      <div class="plan">
+        <strong>Basic</strong>
+        <div style="display:flex; align-items: baseline;">
+          <h2>$2</h2>
+          <small>/per month</small>
+        </div>
+        <ul>
+          <li>10 Forms</li>
+          <li>1000 Responses</li>
+          <li>1000 Webhook call</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <strong>Pro</strong>
+        <div style="display:flex; align-items: baseline;">
+          <h2>$10</h2>
+          <small>/per month</small>
+        </div>
+        <ul>
+          <li>100 Forms</li>
+          <li>10,000 Responses</li>
+          <li>10,000 Webhook call</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <strong>Flex</strong>
+        <div style="display:flex; align-items: baseline;">
+          <h2>$0</h2>
+          <small>/per month</small>
+        </div>
+        <ul>
+          <li>25&cent; / Form</li>
+          <li>0.002&cent; / Response</li>
+          <li>0.002&cent; / Webhook call</li>
+        </ul>
+      </div>
+    </div>
+    <div
+      style="display: flex; align-items:center; justify-content:center; margin-top: 20px;"
+    >
+      <div>
+        <button>Get Started</button>
+      </div>
+    </div>
+  </div>
+`;
+const CreatePage = html` ${headTag}
   <body>
     <div class="container" x-data="formBuilder()">
       <h1>Form Builder</h1>
@@ -242,168 +473,88 @@ const CreatePage = html` <head>
       </form>
       <pre class="terminal-code" x-text="JSON.stringify(form, null, 2)"></pre>
     </div>
-
-    <script>
-      function formBuilder() {
-        return {
-          form: {
-            name: "",
-            description: "",
-            protected: false,
-            password: "",
-            fields: [],
-          },
-
-          optionIndexText(index) {
-            return \`Option \${index + 1}\`;
-          },
-
-          hasOptions(field) {
-            // Return true for field types that require options
-            return [
-              "choose-one",
-              "checkbox",
-              "dropdown",
-              "rating",
-              "range",
-            ].includes(field.type);
-          },
-
-          initializeOptions(field) {
-            // Initialize options only if the field type requires it
-            if (this.hasOptions(field) && !field.options) {
-              field.options = [""];
-            } else if (!this.hasOptions(field)) {
-              delete field.options;
-            }
-          },
-
-          addField() {
-            this.form.fields.push({
-              type: "text",
-              question: "",
-              description: "",
-              options: [],
-            });
-          },
-
-          removeField(index) {
-            this.form.fields.splice(index, 1);
-          },
-
-          addOption(fieldIndex) {
-            this.form.fields[fieldIndex].options.push("");
-          },
-
-          removeOption(fieldIndex, optionIndex) {
-            this.form.fields[fieldIndex].options.splice(optionIndex, 1);
-          },
-
-          submitForm() {
-            console.log(this.form);
-            // Send the form as JSON
-            fetch("/api/forms", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(this.form),
-            })
-              .then((response) => {
-                if (response.redirected) {
-                  window.location.href = response.url;
-                } else {
-                  return response.json();
-                }
-              })
-              .then((data) => {
-                console.log("Form created successfully:", data);
-              })
-              .catch((error) => {
-                console.error("Error creating form:", error);
-              });
-          },
-        };
-      }
-    </script>
-
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="/static/form-create.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
   </body>`;
+const ListPage = html`
+  ${headTag}
+  <div class="container">
+    ${nav}
+    <header>
+      <h1 class="terminal-heading">Forms</h1>
+      <a href="/forms/new" class="btn btn-default btn-small btn-ghost"
+        >+ Create Form</a
+      >
+    </header>
+    <hr style="margin:0;/>
+    <div class="terminal-list">
+      ${Array.from(db.forms.values()).map(
+        (form) => html`
+          <div class="terminal-list-item space-between">
+            <a href="/forms/${form.id}" class="terminal-link">${form.name}</a>
+            <div class="terminal-actions">
+              <a
+                href="/forms/${form.id}/delete"
+                class="terminal-link terminal-alert-error"
+                >Delete</a
+              >
+              <span>|</span>
+              <a href="/forms/${form.id}/edit" class="terminal-link">Edit</a>
+
+              <span>|</span>
+              <a href="/forms/${form.id}/preview" class="terminal-link"
+                >Preview</a
+              >
+              <span>|</span>
+              <a href="/forms/${form.id}/responses" class="terminal-link"
+                >Responses</a
+              >
+            </div>
+          </div>
+        `
+      )}
+    </div>
+  </div>
+`;
 
 // Forms ****************************************************************
 const forms = new Hono();
 // list
 forms.get("/", (c) => {
-  return c.html(
-    html`
-      <style>
-        ${raw(containerStyle)} ${raw(navStyle)} .item {
-          display: flex;
-          justify-content: space-between;
-          padding: 8px;
-          border-bottom: 1px solid #ccc;
-          div {
-            display: flex;
-            gap: 12px;
-          }
-        }
-        .h {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          h1 {
-            margin-bottom: 0;
-          }
-          a {
-            text-decoration: none;
-          }
-        }
-      </style>
-      <div class="c">
-        ${nav}
-        <div class="h">
-          <h1>Forms</h1>
-          <a href="/forms/new">+ Create Form</a>
-        </div>
-        <hr />
-        <div style="display:flex; flex-direction: column;">
-          ${Array.from(db.forms.values()).map(
-            (form) => html`
-              <div class="item">
-                <a href="/forms/${form.id}">${form.name}</a>
-                <div>
-                  <a href="/forms/${form.id}/edit">Edit</a><span>|</span>
-                  <a href="/forms/${form.id}/delete">Delete</a><span>|</span>
-                  <a href="/forms/${form.id}/preview">Preview</a><span>|</span>
-                  <a href="/forms/${form.id}/responses">Responses</a>
-                </div>
-              </div>
-            `
-          )}
-        </div>
-      </div>
-    `
-  );
+  return c.html(ListPage);
 });
 // create
 forms.get("/new", (c) => {
   return c.html(CreatePage);
 });
 // save
-forms.post("/new", async (c) => {
-  const payload = await c.req.json<CreateFormPayload>();
-  const form: Form = {
-    id: crypto.randomUUID(),
-    owner: "", //Todo: get user id from cookie
-    name: payload.name,
-    description: payload.description,
-    fields: payload.fields,
-    protected: payload.protected,
-    password: payload.password,
-    webhooks: [],
-  };
-  db.forms.set(form.id, form);
-  return c.redirect(`/forms/${form.id}`);
+forms.post("/", async (c) => {
+  try {
+    const formPayload = await c.req.json<CreateFormPayload>();
+    const id = crypto.randomUUID();
+    const form: Form = {
+      id,
+      owner: "1",
+      name: formPayload.name,
+      description: formPayload.description,
+      fields: formPayload.fields,
+      protected: formPayload.protected,
+      password: formPayload.password,
+      webhooks: [],
+    };
+    db.forms.set(form.id, form);
+    c.status(202);
+    return c.json({ mesage: "good" });
+
+    // return c.redirect(`/forms`);
+  } catch (error) {
+    console.error(error);
+    c.status(500);
+    return c.json({ message: "Internal Server Error" });
+  }
 });
 // edit
 forms.get("/:id/edit", (c) => {
@@ -583,150 +734,7 @@ const responses = new Hono();
 
 // Home ****************************************************************
 web.get("/", (c) => {
-  return c.html(
-    html`
-      <style>
-        ${raw(bodyStyle)} ${raw(containerStyle)} .o {
-          border-left: 4px solid #16a34a;
-          margin-left: -16px;
-          padding-left: 12px;
-        }
-        .f {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .a {
-          display: flex;
-          gap: 12px;
-        }
-
-        p {
-          line-height: 1.5;
-        }
-        tr {
-          padding-bottom: 20px;
-        }
-        .pricing {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          justify-content: space-between;
-          border: 2px dashed #000;
-          @media (prefers-color-scheme: dark) {
-            border-color: #fff;
-          }
-          .plan {
-            border-right: 2px dashed #000;
-            @media (prefers-color-scheme: dark) {
-              border-color: #fff;
-            }
-            padding: 12px;
-            h2 {
-              margin-bottom: 0;
-            }
-          }
-          .plan:last-child {
-            border-right: none;
-          }
-          ul {
-            padding-left: 1rem;
-            list-style-type: disc;
-            line-height: 1.5;
-          }
-        }
-      </style>
-
-      <div class="c">
-        <div class="f">
-          <h1>Skeleton Forms</h1>
-          <div class="a">
-            <a href="/login">Login</a>
-            <span>|</span>
-            <a href="/signup">Signup</a>
-          </div>
-        </div>
-
-        <p class="o">The simple, flexible form builder for developers.</p>
-        <p>
-          Skeleton Forms is a lightweight form builder made for developers who
-          want an easy way to collect and process data. It comes with a
-          straightforward REST API and built-in webhook support, so you can
-          quickly integrate forms into your workflows and automate tasks without
-          the hassle.
-        </p>
-        <br />
-        <!--------------------Features------------------------>
-        <h2>Features</h2>
-        <hr style="border-top: 2px dashed #000" />
-        <br />
-        <strong>Developer Friendly</strong>
-        <p>Build and manage forms programmatically with our API.</p>
-        <strong>Webhook integrations</strong>
-        <p>
-          Automate your workflows by triggering external services on form
-          submissions.
-        </p>
-        <strong>Flexible usage</strong>
-        <p>
-          Choose between simple pricing tiers or flexible pay-per-use options
-          that scale with your needs.
-        </p>
-        <strong>Lightweight & Fast</strong>
-        <p>
-          Built for speed and simplicity, Skeleton Forms won&apos;t slow you
-          down.
-        </p>
-        <br />
-        <!--------------------Pricing------------------------>
-        <h2>Pricing</h2>
-        <div class="pricing">
-          <div class="plan">
-            <strong>Basic</strong>
-            <div style="display:flex; align-items: baseline;">
-              <h2>$2</h2>
-              <small>/per month</small>
-            </div>
-            <ul>
-              <li>10 Forms</li>
-              <li>1000 Responses</li>
-              <li>1000 Webhook call</li>
-            </ul>
-          </div>
-          <div class="plan">
-            <strong>Pro</strong>
-            <div style="display:flex; align-items: baseline;">
-              <h2>$10</h2>
-              <small>/per month</small>
-            </div>
-            <ul>
-              <li>100 Forms</li>
-              <li>10,000 Responses</li>
-              <li>10,000 Webhook call</li>
-            </ul>
-          </div>
-          <div class="plan">
-            <strong>Flex</strong>
-            <div style="display:flex; align-items: baseline;">
-              <h2>$0</h2>
-              <small>/per month</small>
-            </div>
-            <ul>
-              <li>25&cent; / Form</li>
-              <li>0.002&cent; / Response</li>
-              <li>0.002&cent; / Webhook call</li>
-            </ul>
-          </div>
-        </div>
-        <div
-          style="display: flex; align-items:center; justify-content:center; margin-top: 20px;"
-        >
-          <div>
-            <button>Get Started</button>
-          </div>
-        </div>
-      </div>
-    `
-  );
+  return c.html(NewHomePage);
 });
 web.route("/forms", forms);
 web.route("/webhooks", webhooks);

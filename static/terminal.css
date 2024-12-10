@@ -138,6 +138,17 @@ h6 {
   font-weight: 600;
 }
 
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: calc(var(--global-space));
+}
+header h1 {
+  margin: 0;
+}
+
 blockquote {
   position: relative;
   padding-left: calc(var(--global-space) * 2);
@@ -352,6 +363,18 @@ ul ul {
   padding: 0;
 }
 
+.terminal-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--global-space);
+}
+.terminal-list-item {
+  display: flex;
+  gap: var(--global-space);
+  padding: var(--global-space) 0;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
 ol.terminal-toc li {
   border-bottom: 1px dotted var(--secondary-color);
   padding: 0;
@@ -408,8 +431,8 @@ hr {
   overflow: hidden;
   margin-left: 0;
   margin-right: 0;
-  margin-top: calc(var(--global-space) * 4);
-  margin-bottom: 15px;
+  margin-top: calc(var(--global-space));
+  margin-bottom: calc(var(--global-space));
   border: 0;
   border-bottom: 1px dashed var(--secondary-color);
 }
@@ -1060,4 +1083,8 @@ figure > figcaption {
 
 .hljs-strong {
   font-weight: bold;
+}
+
+.space-between {
+  justify-content: space-between;
 }
