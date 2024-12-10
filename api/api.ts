@@ -58,8 +58,8 @@ const forms = new Hono()
     const form = db.forms.get(id);
     if (form) {
       db.forms.delete(id);
-      c.status(200);
-      return c.json(form);
+      c.status(204);
+      return c.body(null);
     }
     c.status(404);
     return c.json({ message: "Form not found" });
@@ -95,7 +95,8 @@ const webhooks = new Hono()
     const webhook = db.webhooks.get(id);
     if (webhook) {
       db.webhooks.delete(id);
-      return c.json(webhook);
+      c.status(204);
+      return c.body(null);
     }
     c.status(404);
     return c.json({ message: "Webhook not found" });
@@ -131,7 +132,8 @@ const users = new Hono()
     const user = db.users.get(id);
     if (user) {
       db.users.delete(id);
-      return c.json(user);
+      c.status(204);
+      return c.body(null);
     }
     c.status(404);
     return c.json({ message: "User not found" });
@@ -167,7 +169,8 @@ const responses = new Hono()
     const response = db.responses.get(id);
     if (response) {
       db.responses.delete(id);
-      return c.json(response);
+      c.status(204);
+      return c.body(null);
     }
     c.status(404);
     return c.json({ message: "Response not found" });
