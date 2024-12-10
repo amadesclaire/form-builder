@@ -5,8 +5,8 @@ import {
   FormResponse,
   User,
   Webhook,
-} from "./types.ts";
-import { db } from "./db.ts";
+} from "../types.ts";
+import { db } from "../db.ts";
 
 export const api = new Hono();
 
@@ -58,6 +58,7 @@ const forms = new Hono()
     const form = db.forms.get(id);
     if (form) {
       db.forms.delete(id);
+      c.status(200);
       return c.json(form);
     }
     c.status(404);

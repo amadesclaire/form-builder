@@ -1,31 +1,15 @@
 import { Hono } from "@hono/hono";
-import { CreateFormPayload, Form } from "./types.ts";
-import { db } from "./db.ts";
-import { html, raw } from "@hono/hono/html";
+import { CreateFormPayload, Form } from "../types.ts";
+import { db } from "../db.ts";
+import { html } from "@hono/hono/html";
 
-export const web = new Hono();
-
-// Styles ****************************************************************
-const bodyStyle = `
-  body {
-    @media (prefers-color-scheme: dark) {
-      background-color: #333;
-      color: #fff;
-      a {
-      color: #16a34a;
-      }
-    }
-  }
-`;
-const containerStyle = ` 
-  .c {
-    padding: 0;
-    margin: 48px auto;
-    max-width: 768px;
-    font-family: ui-monospace, monospace;
-    font-size: 90%;
-  }`;
-
+// Views ****************************************************************
+export const head = html`<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Form</title>
+  <link rel="stylesheet" href="/static/terminal.css" />
+</head>`;
 const nav = html` <nav class="terminal-menu">
   <ul>
     <li><a href="/forms">Forms</a></li>
@@ -37,257 +21,7 @@ const nav = html` <nav class="terminal-menu">
     <li><a href="/responses">Responses</a></li>
   </ul>
 </nav>`;
-
-// Views ****************************************************************
-const headTag = html`<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Form</title>
-  <link rel="stylesheet" href="/static/terminal.css" />
-</head>`;
-const NewHomePage = html` ${headTag}
-  <body>
-    <div class="container">
-      <header class="terminal-banner space-between">
-        <h1 class="terminal-heading">Skeleton Forms</h1>
-        <div class="terminal-flex" style="gap: 12px;">
-          <a href="/login" class="terminal-link">Login</a>
-          <span class="terminal-text">|</span>
-          <a href="/signup" class="terminal-link">Signup</a>
-        </div>
-      </header>
-
-      <br />
-
-      <p class="terminal-alert-primary">
-        The simple, flexible form builder for developers.
-      </p>
-      <p>
-        Skeleton Forms is a lightweight form builder made for developers who
-        want an easy way to collect and process data. It comes with a
-        straightforward REST API and built-in webhook support, so you can
-        quickly integrate forms into your workflows and automate tasks without
-        the hassle.
-      </p>
-      <hr class="terminal-hr" />
-
-      <!-- Features Section -->
-      <h2 class="terminal-heading">Features</h2>
-      <div>
-        <strong>Developer Friendly</strong>
-        <p>Build and manage forms programmatically with our API.</p>
-        <strong>Webhook Integrations</strong>
-        <p>
-          Automate your workflows by triggering external services on form
-          submissions.
-        </p>
-        <strong>Flexible Usage</strong>
-        <p>
-          Choose between simple pricing tiers or flexible pay-per-use options
-          that scale with your needs.
-        </p>
-        <strong>Lightweight & Fast</strong>
-        <p>
-          Built for speed and simplicity, Skeleton Forms won&apos;t slow you
-          down.
-        </p>
-      </div>
-      <hr class="terminal-hr" />
-
-      <!-- Pricing Section -->
-      <h2 class="terminal-heading">Pricing</h2>
-      <div class="terminal-timeline">
-        <div class="terminal-card">
-          <header class="terminal-card-header">
-            <strong>Basic</strong>
-          </header>
-          <div class="terminal-card-body">
-            <h2>$2</h2>
-            <small>/per month</small>
-            <ul class="terminal-list">
-              <li>10 Forms</li>
-              <li>1000 Responses</li>
-              <li>1000 Webhook Calls</li>
-            </ul>
-          </div>
-        </div>
-        <div class="terminal-card">
-          <header class="terminal-card-header">
-            <strong>Pro</strong>
-          </header>
-          <div class="terminal-card-body">
-            <h2>$10</h2>
-            <small>/per month</small>
-            <ul class="terminal-list">
-              <li>100 Forms</li>
-              <li>10,000 Responses</li>
-              <li>10,000 Webhook Calls</li>
-            </ul>
-          </div>
-        </div>
-        <div class="terminal-card">
-          <header class="terminal-card-header">
-            <strong>Flex</strong>
-          </header>
-          <div class="terminal-card-body">
-            <h2>$0</h2>
-            <small>/per month</small>
-            <ul class="terminal-list">
-              <li>25&cent; / Form</li>
-              <li>0.002&cent; / Response</li>
-              <li>0.002&cent; / Webhook Call</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Call to Action -->
-      <div style="text-align: center; margin-top: 20px;">
-        <button class="btn btn-default">Get Started</button>
-      </div>
-    </div>
-  </body>`;
-const OldHomePage = html`
-  <style>
-    ${raw(bodyStyle)} ${raw(containerStyle)} .o {
-      border-left: 4px solid #16a34a;
-      margin-left: -16px;
-      padding-left: 12px;
-    }
-    .f {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .a {
-      display: flex;
-      gap: 12px;
-    }
-
-    p {
-      line-height: 1.5;
-    }
-    tr {
-      padding-bottom: 20px;
-    }
-    .pricing {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      justify-content: space-between;
-      border: 2px dashed #000;
-      @media (prefers-color-scheme: dark) {
-        border-color: #fff;
-      }
-      .plan {
-        border-right: 2px dashed #000;
-        @media (prefers-color-scheme: dark) {
-          border-color: #fff;
-        }
-        padding: 12px;
-        h2 {
-          margin-bottom: 0;
-        }
-      }
-      .plan:last-child {
-        border-right: none;
-      }
-      ul {
-        padding-left: 1rem;
-        list-style-type: disc;
-        line-height: 1.5;
-      }
-    }
-  </style>
-
-  <div class="c">
-    <div class="f">
-      <h1>Skeleton Forms</h1>
-      <div class="a">
-        <a href="/login">Login</a>
-        <span>|</span>
-        <a href="/signup">Signup</a>
-      </div>
-    </div>
-
-    <p class="o">The simple, flexible form builder for developers.</p>
-    <p>
-      Skeleton Forms is a lightweight form builder made for developers who want
-      an easy way to collect and process data. It comes with a straightforward
-      REST API and built-in webhook support, so you can quickly integrate forms
-      into your workflows and automate tasks without the hassle.
-    </p>
-    <br />
-    <!--------------------Features------------------------>
-    <h2>Features</h2>
-    <hr style="border-top: 2px dashed #000" />
-    <br />
-    <strong>Developer Friendly</strong>
-    <p>Build and manage forms programmatically with our API.</p>
-    <strong>Webhook integrations</strong>
-    <p>
-      Automate your workflows by triggering external services on form
-      submissions.
-    </p>
-    <strong>Flexible usage</strong>
-    <p>
-      Choose between simple pricing tiers or flexible pay-per-use options that
-      scale with your needs.
-    </p>
-    <strong>Lightweight & Fast</strong>
-    <p>
-      Built for speed and simplicity, Skeleton Forms won&apos;t slow you down.
-    </p>
-    <br />
-    <!--------------------Pricing------------------------>
-    <h2>Pricing</h2>
-    <div class="pricing">
-      <div class="plan">
-        <strong>Basic</strong>
-        <div style="display:flex; align-items: baseline;">
-          <h2>$2</h2>
-          <small>/per month</small>
-        </div>
-        <ul>
-          <li>10 Forms</li>
-          <li>1000 Responses</li>
-          <li>1000 Webhook call</li>
-        </ul>
-      </div>
-      <div class="plan">
-        <strong>Pro</strong>
-        <div style="display:flex; align-items: baseline;">
-          <h2>$10</h2>
-          <small>/per month</small>
-        </div>
-        <ul>
-          <li>100 Forms</li>
-          <li>10,000 Responses</li>
-          <li>10,000 Webhook call</li>
-        </ul>
-      </div>
-      <div class="plan">
-        <strong>Flex</strong>
-        <div style="display:flex; align-items: baseline;">
-          <h2>$0</h2>
-          <small>/per month</small>
-        </div>
-        <ul>
-          <li>25&cent; / Form</li>
-          <li>0.002&cent; / Response</li>
-          <li>0.002&cent; / Webhook call</li>
-        </ul>
-      </div>
-    </div>
-    <div
-      style="display: flex; align-items:center; justify-content:center; margin-top: 20px;"
-    >
-      <div>
-        <button>Get Started</button>
-      </div>
-    </div>
-  </div>
-`;
-const CreatePage = html` ${headTag}
+const CreatePage = html` ${head}
   <body>
     <div class="container" x-data="formBuilder()">
       <h1>Form Builder</h1>
@@ -481,8 +215,8 @@ const CreatePage = html` ${headTag}
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
     ></script>
   </body>`;
-const ListPage = html`
-  ${headTag}
+const ListPage = (forms: Form[]) => html`
+  ${head}
   <div class="container">
     ${nav}
     <header>
@@ -493,7 +227,7 @@ const ListPage = html`
     </header>
     <hr style="margin:0;/>
     <div class="terminal-list">
-      ${Array.from(db.forms.values()).map(
+      ${forms.map(
         (form) => html`
           <div class="terminal-list-item space-between">
             <a href="/forms/${form.id}" class="terminal-link">${form.name}</a>
@@ -523,7 +257,7 @@ const ListPage = html`
 `;
 const EditPage = (form: Form) => {
   return html`
-    ${headTag}
+    ${head}
     <body>
       <div class="container" x-data="formBuilder(${JSON.stringify(form)})">
         <h1 class="terminal-heading">Edit Form</h1>
@@ -702,7 +436,7 @@ const EditPage = (form: Form) => {
 
           <!-- Submit Button -->
           <div class="form-group">
-            <button type="submit" class="btn btn-primary">Update Form</button>
+            <button type="submit" class="btn btn-default">Update Form</button>
           </div>
         </form>
         <pre class="terminal-code" x-text="JSON.stringify(form, null, 2)"></pre>
@@ -715,12 +449,59 @@ const EditPage = (form: Form) => {
     </body>
   `;
 };
+const ShowPage = (form: Form) => html`
+  ${head}
+  <div class="container">
+    <div class="terminal-flex" style="justify-content: flex-start; gap: 10px;">
+      <a href="/forms" class=""> < Back </a>
+      <span>|</span>
 
-// Forms ****************************************************************
+      <a
+        href="/forms/${form.id}/delete"
+        class="terminal-link terminal-alert-error"
+        >Delete</a
+      >
+      <span>|</span>
+
+      <a href="/forms/${form.id}/edit">Edit</a> <span>|</span>
+
+      <a href="/forms/${form.id}/preview">Preview</a>
+      <span>|</span>
+
+      <a href="/forms/${form.id}/responses">Responses</a>
+    </div>
+
+    <h1 class="terminal-heading">${form.name}</h1>
+    <p class="terminal-text">${form.description}</p>
+
+    <ul class="terminal-list">
+      ${form.fields.map(
+        (field) => html`
+          <li>
+            <strong>${field.question}</strong>
+            <p class="terminal-text">Description: ${field.description}</p>
+            <p class="terminal-text">Type: ${field.type}</p>
+            <p class="terminal-text">
+              Required: ${field.required ? "Yes" : "No"}
+            </p>
+          </li>
+        `
+      )}
+    </ul>
+  </div>
+`;
+
+// Handlers ****************************************************************
 const forms = new Hono();
 // list
 forms.get("/", (c) => {
-  return c.html(ListPage);
+  console.log(Object.fromEntries(db.forms));
+  c.header(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+
+  return c.html(ListPage(Array.from(db.forms.values())));
 });
 // create
 forms.get("/new", (c) => {
@@ -729,8 +510,10 @@ forms.get("/new", (c) => {
 // save
 forms.post("/", async (c) => {
   try {
+    console.log(Object.fromEntries(db.forms));
     const formPayload = await c.req.json<CreateFormPayload>();
     const id = crypto.randomUUID();
+
     const form: Form = {
       id,
       owner: "1",
@@ -741,7 +524,9 @@ forms.post("/", async (c) => {
       password: formPayload.password,
       webhooks: [],
     };
+
     db.forms.set(form.id, form);
+    console.log(Object.fromEntries(db.forms));
     c.status(302);
     return c.redirect(`/forms/${id}`);
   } catch (error) {
@@ -765,38 +550,7 @@ forms.get("/:id", (c) => {
   const id = c.req.param("id");
   const form = db.forms.get(id) as Form;
   if (form) {
-    return c.html(
-      html`
-        <style>
-          ${raw(containerStyle)} ul {
-            padding-left: 1rem;
-          }
-        </style>
-        <div class="c">
-          <div>
-            <a href="/forms/${form.id}/edit">Edit</a>
-            <a href="/forms/${form.id}/delete">Delete</a>
-            <a href="/forms/${form.id}/preview">Preview</a>
-            <a href="/forms/${form.id}/responses">Responses</a>
-          </div>
-          <h1>${form.name}</h1>
-
-          <p>${form.description}</p>
-          <ul>
-            ${form.fields.map(
-              (field) => html`
-                <li>
-                  <strong>${field.question}</strong>
-                  <p>Description: ${field.description}</p>
-                  <p>Type: ${field.type}</p>
-                  <p>Required: ${field.required ? "Yes" : "No"}</p>
-                </li>
-              `
-            )}
-          </ul>
-        </div>
-      `
-    );
+    return c.html(ShowPage(form));
   }
   c.status(404);
   return c.html(html`<h1>Form not found /:id</h1>`);
@@ -815,6 +569,7 @@ forms.post("/:id", async (c) => {
     password: payload.password,
   };
   db.forms.set(id, updatedForm);
+  return c.redirect(`/forms/${id}`);
 });
 // delete
 forms.get("/:id/delete", (c) => {
@@ -823,12 +578,21 @@ forms.get("/:id/delete", (c) => {
   if (form) {
     return c.html(
       html`
-        <h1>Delete Form</h1>
-        <p>Are you sure you want to delete ${form.name}?</p>
-        <form method="post">
-          <button type="submit">Delete</button>
-          <a href="/forms/${form.id}">Cancel</a>
-        </form>
+        ${head}
+        <div class="container">
+          <h1 class="terminal-heading">Delete Form</h1>
+          <p class="terminal-text">
+            Are you sure you want to delete <strong>${form.name}</strong>?
+          </p>
+          <form method="post" class="form">
+            <div class="form-group">
+              <button type="submit" class="btn btn-error">Delete</button>
+              <a href="/forms/${form.id}" class="btn btn-default btn-ghost"
+                >Cancel</a
+              >
+            </div>
+          </form>
+        </div>
       `
     );
   }
@@ -846,41 +610,4 @@ forms.post("/:id/delete", (c) => {
   return c.html(html`<h1>Form not found /:id/delete</h1>`);
 });
 
-// Webhooks ****************************************************************
-const webhooks = new Hono();
-//list
-// show
-// create
-// save
-// edit
-// update
-// delete
-
-// users ****************************************************************
-const users = new Hono();
-//list
-// show
-// create
-// save
-// edit
-// update
-// delete
-
-// Responses ****************************************************************
-const responses = new Hono();
-//list
-// show
-// create
-// save
-// edit
-// update
-// delete
-
-// Home ****************************************************************
-web.get("/", (c) => {
-  return c.html(NewHomePage);
-});
-web.route("/forms", forms);
-web.route("/webhooks", webhooks);
-web.route("/users", users);
-web.route("/responses", responses);
+export default forms;
