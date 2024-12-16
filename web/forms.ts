@@ -1,8 +1,8 @@
 import { Hono } from "@hono/hono";
-import { CreateFormPayload, Form } from "../types.ts";
+import { CreateFormPayload, Form, FormResponse } from "../types.ts";
 import { db } from "../db.ts";
 import { html } from "@hono/hono/html";
-
+import { genId } from "../utils/genId.ts";
 // Views ****************************************************************
 export const head = html`<head>
   <meta charset="UTF-8" />
@@ -469,6 +469,9 @@ const ShowPage = (form: Form) => html`
       <span>|</span>
 
       <a href="/forms/${form.id}/responses">Responses</a>
+      <span>|</span>
+
+      <a href="/respond/${form.id}" class="terminal-link">Respond</a>
     </div>
 
     <h1 class="terminal-heading">${form.name}</h1>
@@ -490,12 +493,48 @@ const ShowPage = (form: Form) => html`
     </ul>
   </div>
 `;
+const ResponseListPage = (responses: FormResponse[]) => html`
+  ${head}
+  <body>
+    <div class="container">
+      <h1 class="terminal-heading">Form Responses</h1>
+      <hr style="margin-top:0;" />
+      <div class="terminal-list">
+        ${responses.length > 0
+          ? responses.map(
+              (response) => html`
+                <div class="terminal-list-item">
+                  <div>
+                    <b class="terminal-subheading"> Response ID:</b> <br />
+                    <p>${response.id}</p>
+                    <ul>
+                      ${Object.entries(response.response).map(
+                        ([key, value]) => html`
+                          <li>
+                            <strong>${key}:</strong> <br />${typeof value ===
+                            "object"
+                              ? JSON.stringify(value)
+                              : value}
+                          </li>
+                        `
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              `
+            )
+          : html` <p class="terminal-text">No responses yet.</p> `}
+      </div>
+      <br />
+      <a href="/forms" class="btn btn-default">Back to Forms</a>
+    </div>
+  </body>
+`;
 
 // Handlers ****************************************************************
-const forms = new Hono();
+const forms = new Hono({ strict: false });
 // list
 forms.get("/", (c) => {
-  console.log(Object.fromEntries(db.forms));
   c.header(
     "Cache-Control",
     "no-store, no-cache, must-revalidate, proxy-revalidate"
@@ -510,9 +549,8 @@ forms.get("/new", (c) => {
 // save
 forms.post("/", async (c) => {
   try {
-    console.log(Object.fromEntries(db.forms));
     const formPayload = await c.req.json<CreateFormPayload>();
-    const id = crypto.randomUUID();
+    const id = genId();
 
     const form: Form = {
       id,
@@ -534,6 +572,14 @@ forms.post("/", async (c) => {
     c.status(500);
     return c.json({ message: "Internal Server Error" });
   }
+});
+forms.get("/:id/responses", (c) => {
+  const id = c.req.param("id");
+  if (!id) {
+    return c.html("Sorry! We couldn't find that form.");
+  }
+  const responses: FormResponse[] = Array.from(db.responses.values());
+  return c.html(ResponseListPage(responses));
 });
 // edit
 forms.get("/:id/edit", (c) => {

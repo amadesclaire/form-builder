@@ -2,7 +2,8 @@ import { Hono } from "@hono/hono";
 import { html } from "@hono/hono/html";
 import forms from "./forms.ts";
 import webhooks from "./webhooks.ts";
-export const web = new Hono();
+import respond from "./respond.ts";
+export const web = new Hono({ strict: false });
 
 // Styles ****************************************************************
 export const head = html`<head>
@@ -296,7 +297,7 @@ const OldHomePage = html`
 `;
 
 // users ****************************************************************
-const users = new Hono();
+const users = new Hono({ strict: false });
 //list
 // show
 // create
@@ -306,7 +307,7 @@ const users = new Hono();
 // delete
 
 // Responses ****************************************************************
-const responses = new Hono();
+const responses = new Hono({ strict: false });
 //list
 // show
 // create
@@ -326,3 +327,4 @@ web.route("/forms", forms);
 web.route("/webhooks", webhooks);
 web.route("/users", users);
 web.route("/responses", responses);
+web.route("/respond", respond);

@@ -4,7 +4,7 @@ import { serveDir, serveFile } from "@std/http/file-server";
 import { api } from "./api/api.ts";
 import { web } from "./web/web.ts";
 
-const app = new Hono({ strict: true });
+const app = new Hono({ strict: false });
 
 /****************************************************
  * App Routes

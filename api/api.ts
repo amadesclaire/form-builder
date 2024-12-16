@@ -7,68 +7,14 @@ import {
   Webhook,
 } from "../types.ts";
 import { db } from "../db.ts";
+import { genId } from "../utils/genId.ts";
 
-export const api = new Hono();
-
-/****************************************************
- * Form routes
- ****************************************************/
-const forms = new Hono()
-  .get("/", (c) => c.json(Array.from(db.forms.values())))
-  .get("/:id", (c) => {
-    const id = c.req.param("id");
-    const form = db.forms.get(id);
-    if (form) {
-      return c.json(form);
-    }
-    c.status(404);
-    return c.json({ message: "Form not found" });
-  })
-  .post("/", async (c) => {
-    try {
-      const formPayload = await c.req.json<CreateFormPayload>();
-      const id = crypto.randomUUID();
-      const form: Form = {
-        id,
-        owner: "1", // TODO
-        name: formPayload.name,
-        description: formPayload.description,
-        fields: formPayload.fields,
-        protected: formPayload.protected,
-        password: formPayload.password,
-        webhooks: [],
-      };
-      db.forms.set(form.id, form);
-      c.status(202);
-      return c.json(form);
-    } catch (error) {
-      console.error(error);
-      c.status(500);
-      return c.json({ message: "Internal Server Error" });
-    }
-  })
-  .put("/:id", async (c) => {
-    const id = c.req.param("id");
-    const form = await c.req.json<Form>();
-    db.forms.set(id, form);
-    return c.json(form);
-  })
-  .delete("/:id", (c) => {
-    const id = c.req.param("id");
-    const form = db.forms.get(id);
-    if (form) {
-      db.forms.delete(id);
-      c.status(204);
-      return c.body(null);
-    }
-    c.status(404);
-    return c.json({ message: "Form not found" });
-  });
+export const api = new Hono({ strict: false });
 
 /****************************************************************
  * Webhook routes
  ****************************************************************/
-const webhooks = new Hono()
+const webhooks = new Hono({ strict: false })
   .get("/", (c) => c.json({ message: "Hello, Webhooks!" }))
   .get("/:id", (c) => {
     const id = c.req.param("id");
@@ -105,7 +51,7 @@ const webhooks = new Hono()
 /****************************************************
  * User routes
  ****************************************************/
-const users = new Hono()
+const users = new Hono({ strict: false })
   .get("/", (c) => c.json(Array.from(db.users.values())))
   .get("/:id", (c) => {
     const id = c.req.param("id");
@@ -142,21 +88,18 @@ const users = new Hono()
 /****************************************************
  * Form Response routes
  ****************************************************/
-const responses = new Hono()
+const responses = new Hono({ strict: false })
   .get("/", (c) => c.json(Array.from(db.responses.values())))
   .get("/:id", (c) => {
     const id = c.req.param("id");
-    const response = db.responses.get(id);
-    if (response) {
-      return c.json(response);
+    const responses: FormResponse[] = Array.from(db.responses.values()).filter(
+      (r) => r.formId === id
+    );
+    if (responses.length === 0) {
+      c.status(204);
+      return c.json({ message: "No responses" });
     }
-    c.status(404);
-    return c.json({ message: "Response not found" });
-  })
-  .post("/", async (c) => {
-    const response = await c.req.json<FormResponse>();
-    db.responses.set(response.id, response);
-    return c.json(response);
+    return c.json(responses);
   })
   .put("/:id", async (c) => {
     const id = c.req.param("id");
@@ -177,10 +120,103 @@ const responses = new Hono()
   });
 
 /****************************************************
+ * Form routes
+ ****************************************************/
+const forms = new Hono({ strict: false })
+  .route("/responses", responses)
+  .get("/", (c) => c.json(Array.from(db.forms.values())))
+  .get("/:id", (c) => {
+    const id = c.req.param("id");
+    const form = db.forms.get(id);
+    if (form) {
+      return c.json(form);
+    }
+    c.status(404);
+    return c.json({ message: "Form not found" });
+  })
+  .post("/", async (c) => {
+    try {
+      const formPayload = await c.req.json<CreateFormPayload>();
+      const id = genId();
+      const form: Form = {
+        id,
+        owner: "1", // TODO
+        name: formPayload.name,
+        description: formPayload.description,
+        fields: formPayload.fields,
+        protected: formPayload.protected,
+        password: formPayload.password,
+        webhooks: [],
+      };
+      db.forms.set(form.id, form);
+      c.status(201);
+      return c.json(form);
+    } catch (error) {
+      console.error(error);
+      c.status(500);
+      return c.json({ message: "Internal Server Error" });
+    }
+  })
+  .put("/:id", async (c) => {
+    const id = c.req.param("id");
+    const form = await c.req.json<Form>();
+    const existingForm = db.forms.get(id);
+    if (!existingForm) {
+      c.status(404);
+      return c.json({ message: "Form not found" });
+    }
+    const updatedForm = { ...existingForm, ...form };
+    db.forms.set(id, updatedForm);
+    return c.json(updatedForm);
+  })
+  .delete("/:id", (c) => {
+    const id = c.req.param("id");
+    const form = db.forms.get(id);
+    if (form) {
+      db.forms.delete(id);
+      c.status(204);
+      return c.body(null);
+    }
+    c.status(404);
+    return c.json({ message: "Form not found" });
+  })
+  .get("/:id/respond", (c) => {
+    c.status(405);
+    c.res.headers.set("Allow", "POST");
+    c.res.headers.set("Content-Type", "application/json");
+    return c.json({
+      error: "Method Not Allowed",
+      message:
+        "This endpoint only supports POST requests. Please use POST to submit a form response.",
+    });
+  })
+  .post("/:id/respond", async (c) => {
+    const id = c.req.param("id");
+    if (!id) {
+      c.status(400);
+      return c.json({ message: "No form id provided" });
+    }
+    const formResponse: FormResponse = {
+      id: genId(),
+      formId: id,
+      response: await c.req.json(),
+    };
+    db.responses.set(formResponse.id, formResponse);
+    c.status(202);
+    return c.json(formResponse);
+  })
+  .get(":id/responses", (c) => {
+    const id = c.req.param("id");
+    const responses = Array.from(db.responses.values()).filter(
+      (r) => r.formId === id
+    );
+    return c.json(responses);
+  });
+
+/****************************************************
  * API Routes
  ****************************************************/
 api.get("/", (c) => c.json({ message: "Hello, API!" }));
 api.route("/forms", forms);
 api.route("/webhooks", webhooks);
 api.route("/users", users);
-api.route("/responses", responses);

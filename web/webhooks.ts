@@ -4,7 +4,7 @@ import { db } from "../db.ts";
 import { html } from "@hono/hono/html";
 
 // Webhooks ****************************************************************
-const webhooks = new Hono();
+const webhooks = new Hono({ strict: false });
 //list
 // show
 // create
