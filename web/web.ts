@@ -2,7 +2,7 @@ import { Hono } from "@hono/hono";
 import { html } from "@hono/hono/html";
 import forms from "./forms.ts";
 import webhooks from "./webhooks.ts";
-import respond from "./respond.ts";
+import form from "./form.ts";
 export const web = new Hono({ strict: false });
 
 // Styles ****************************************************************
@@ -137,6 +137,9 @@ const NewHomePage = html` ${head}
       <div style="text-align: center; margin-top: 20px;">
         <button class="btn btn-default">Get Started</button>
       </div>
+      <footer style="margin-top: 120px;">
+        <a href="/contact" class="terminal-link">Contact</a>
+      </footer>
     </div>
   </body>`;
 const OldHomePage = html`
@@ -327,4 +330,4 @@ web.route("/forms", forms);
 web.route("/webhooks", webhooks);
 web.route("/users", users);
 web.route("/responses", responses);
-web.route("/respond", respond);
+web.route("/form", form);

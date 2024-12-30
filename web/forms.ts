@@ -471,7 +471,7 @@ const ShowPage = (form: Form) => html`
       <a href="/forms/${form.id}/responses">Responses</a>
       <span>|</span>
 
-      <a href="/respond/${form.id}" class="terminal-link">Respond</a>
+      <a href="/form/${form.id}" class="terminal-link">Respond</a>
     </div>
 
     <h1 class="terminal-heading">${form.name}</h1>
@@ -573,12 +573,15 @@ forms.post("/", async (c) => {
     return c.json({ message: "Internal Server Error" });
   }
 });
+// responses
 forms.get("/:id/responses", (c) => {
   const id = c.req.param("id");
   if (!id) {
     return c.html("Sorry! We couldn't find that form.");
   }
-  const responses: FormResponse[] = Array.from(db.responses.values());
+  const responses: FormResponse[] = Array.from(
+    db.responses.values().filter((r) => r.formId === id)
+  );
   return c.html(ResponseListPage(responses));
 });
 // edit

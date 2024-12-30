@@ -6,10 +6,10 @@ import { head } from "./forms.ts";
 import { FormResponse, FormResponseBody } from "../types.ts";
 import { genId } from "../utils/genId.ts";
 
-const respond = new Hono({ strict: false });
+const form = new Hono({ strict: false });
 
 // Views ************************************************************
-const RespondPage = (form: Form) => html`
+const formPage = (form: Form) => html`
   ${head}
   <body>
     <div
@@ -134,10 +134,10 @@ const RespondPage = (form: Form) => html`
 
 // Routes ************************************************************
 // Show
-respond.get("/thanks", (c) => {
+form.get("/thanks", (c) => {
   return c.html("Thank you for your response!");
 });
-respond.get("/:id", (c) => {
+form.get("/:id", (c) => {
   const id = c.req.param("id");
   if (!id) {
     return c.html("Sorry! We couldn't find that form.");
@@ -146,10 +146,10 @@ respond.get("/:id", (c) => {
   if (!id) {
     return c.html("Sorry! We couldn't find that form.");
   }
-  return c.html(RespondPage(form));
+  return c.html(formPage(form));
 });
 // save
-respond.post("/:formId", async (c) => {
+form.post("/:formId", async (c) => {
   const formId = c.req.param("formId");
   const response = await c.req.json<FormResponseBody>();
   if (!formId) {
@@ -162,11 +162,11 @@ respond.post("/:formId", async (c) => {
     response: response,
   };
   db.responses.set(respId, formResponse);
-  return c.redirect("/respond/thanks");
+  return c.redirect("/form/thanks");
 });
 
-respond.get("/", (c) => {
-  return c.html("You'll need to enter a form ID to respond to a form.");
+form.get("/", (c) => {
+  return c.html("You'll need to enter a form ID to form to a form.");
 });
 
-export default respond;
+export default form;

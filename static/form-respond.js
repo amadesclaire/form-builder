@@ -16,7 +16,7 @@ function responseFormBuilder(form) {
     submitResponse() {
       console.log(this.response);
 
-      fetch(`/respond/${this.form.id}`, {
+      fetch(`/form/${this.form.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
